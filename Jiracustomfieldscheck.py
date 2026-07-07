@@ -56,10 +56,16 @@ def get_jira_fields():
 
         if response.status_code == 200:
             print("✓ API connection successful!")
-            return response.json()
+            try:
+                return response.json()
+            except ValueError:
+                print("✗ Response was not valid JSON. Raw response below:")
+                print(f"  Content-Type: {response.headers.get('Content-Type')}")
+                print(f"  First 300 chars: {response.text[:300]!r}")
+                return None
         else:
             print(f"✗ API Error: Status {response.status_code}")
-            print(f"  Response: {response.text}")
+            print(f"  Response: {response.text[:300]}")
             return None
 
     except requests.exceptions.RequestException as e:
