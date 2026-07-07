@@ -1,0 +1,28 @@
+name: Jira Custom Fields Check
+
+on:
+  workflow_dispatch:      # allows manual run from the Actions tab
+  schedule:
+    - cron: '0 6 * * 1'   # optional: every Monday 6am UTC
+
+jobs:
+  check-custom-fields:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run Jira custom fields check
+        env:
+          JIRA_URL: ${{ secrets.JIRA_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        run: python Jiracustomfieldscheck.py
